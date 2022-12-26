@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <LangVersion>10.0</LangVersion>
+        <IncludeBuildOutput>true</IncludeBuildOutput>
+        <IsPackable>true</IsPackable>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <NoWarn>NU5128;$(NoWarn)</NoWarn>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+      <PackageReference Include="System.Net.Http.Json" Version="7.0.0" />  
+      <PackageReference Include="System.Text.Json" Version="7.0.0" />  
+  </ItemGroup>
+
+
+</Project>

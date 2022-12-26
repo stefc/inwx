@@ -16,7 +16,7 @@
         <Authors>$(Company)</Authors>
         <Copyright>Copyright © $(Company) $([System.DateTime]::Now.Year)</Copyright>
         <Trademark>$(Company)™</Trademark>
-        <Product>stefc.pv</Product>
+        <Product>stefc.inwx</Product>
     </PropertyGroup>
 
     <!-- Versionierung zusammen mit version.json -->
