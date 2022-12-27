@@ -9,6 +9,8 @@ internal class Program
 {
     private static async Task Main(string[] args)
     {
+        var domainName = args.FirstOrDefault("example.com");
+
         var config = new ConfigurationBuilder()
 			.SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
 			.AddJsonFile("appsettings.json")
@@ -26,7 +28,7 @@ internal class Program
         System.Console.WriteLine($"Customer-No:{response.customerNo}");
 
         // List all DNS Records of my Domain 'example.com'
-        var domainInfo = await apiClient.NameServerIno("example.com");
+        var domainInfo = await apiClient.NameServerIno(domainName);
         foreach(var rec in domainInfo.Records) {
             System.Console.WriteLine($"{rec.id}\t{rec.name}\t{rec.type}\t{rec.content}\t{rec.ttl}\t{rec.prio}");
         }

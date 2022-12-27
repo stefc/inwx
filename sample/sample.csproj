@@ -13,8 +13,8 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />
 
-    <!-- <PackageReference Include="stefc.inwx" Version="0.1.1" /> -->
-    <ProjectReference Include="..\src\stefc.inwx.csproj" /> 
+    <PackageReference Include="stefc.inwx" Version="0.1.1" /> 
+    <!-- <ProjectReference Include="..\src\stefc.inwx.csproj" />  -->
     
   </ItemGroup>
 
