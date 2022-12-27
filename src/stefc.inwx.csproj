@@ -14,11 +14,37 @@
     <NoWarn>NU5128;$(NoWarn)</NoWarn>
   </PropertyGroup>
 
+  <PropertyGroup>
+        <Title>INWX API</Title>
+        <PackageId>stefc.inwx</PackageId>
+        <PackageVersion>0.0.0-dev</PackageVersion>
+        <Authors>stefc</Authors>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <RepositoryType>Git</RepositoryType>
+        <RepositoryUrl>https://github.com/stefc/inwx</RepositoryUrl>
+        <Description>Package for Accessing the API of DNS Provider INWX (Germany)</Description>
+        <Copyright>Copyright © $(Authors) 2020-$([System.DateTime]::Now.Year)</Copyright>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageTags>dns, inwx, nameentry</PackageTags>
+        <PackageReadmeFile>readme.md</PackageReadmeFile>
+        <PackageIcon>stefc.inwx.icon.png</PackageIcon>
+        <PackageDependencies>
+          <Group targetFramework=".NETStandard2.1" />
+        </PackageDependencies>
+
+    </PropertyGroup>
+
 
   <ItemGroup>
       <PackageReference Include="System.Net.Http.Json" Version="7.0.0" />  
       <PackageReference Include="System.Text.Json" Version="7.0.0" />  
   </ItemGroup>
+
+  <ItemGroup>
+        <None Include="..\stefc.inwx.icon.png" Pack="true" PackagePath="stefc.inwx.icon.png" />
+        <None Include="..\readme.md" Pack="true" PackagePath="readme.md" />
+    </ItemGroup>
+
 
 
 </Project>

@@ -26,10 +26,5 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
     </ItemGroup>
-    <ItemGroup>
-        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-            <_Parameter1>mosmix.tests</_Parameter1>
-        </AssemblyAttribute>
-    </ItemGroup>
 
 </Project>

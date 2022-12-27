@@ -1,18 +1,11 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http.Json;
-using System.Net.Http;
-
-
-using System.Threading.Tasks;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Net.Http.Headers;
 
 namespace stefc.inwx
 {
-
-
     public class LoginResponse { };
 
     public enum Language { EN, DE };
@@ -48,56 +41,88 @@ namespace stefc.inwx
             if (this.Proxy == null)
             {
                 var client = new HttpClient();
-                
+
                 return client;
             }
 
             var handler = new HttpClientHandler();
             handler.Proxy = this.Proxy;
-            
+
             return new HttpClient(handler);
         }
 
 
-        public record ApiRequest<T>(string method, T @params) { };
-        public record class Envelope<T>(int code, string msg, T resData) {};
+        public record class ApiRequest<T>(string method, T @params) { };
+        public record class Envelope<T>(int code, string msg, T resData) { };
         public record Unit() { };
 
-        public record LoginParams(string user, string pass, [property: JsonPropertyName("case-insensitive")] bool caseInsensitive) { };
-        public record LoginResponse(int customerId, int customerNo, int accountId, string tfa, string buildDate, int version) { }
-        // "method": "account.login",
-        // "params": {"user":"blakeks", "pass":"SCHEDULED", "lang":"de", "clTRID":"CLIENT-123123"}
+        private async Task<R> Post<T, R>(string methodName, int okCode, T arg) where R : class
+        {
+            var request = new ApiRequest<T>(methodName, arg);
+            var options = new JsonSerializerOptions(JsonSerializerDefaults.Web);
+            var response = await this.httpClient.PostAsJsonAsync<ApiRequest<T>>(string.Empty, request, options);
+            response = response.EnsureSuccessStatusCode();
+            if (response != null)
+            {
+                var result = await response.Content.ReadFromJsonAsync<Envelope<R>>();
+                if (result?.code != okCode)
+                    throw new Exception(result?.msg);
+                return result?.resData!;
+            }
+            else throw new Exception(response?.ToString());
+        }
+
+        // login service
+
+        public record class LoginParams(string user, string pass, [property: JsonPropertyName("case-insensitive")] bool caseInsensitive) { };
+        public record class LoginResponse(int customerId, int customerNo, int accountId, string tfa, string buildDate, int version) { }
 
         public async Task<LoginResponse> AccountLogin(string user, string password, bool caseInsensitive = false)
-        {
-            var login = new ApiRequest<LoginParams>("account.login", new LoginParams(user, password, caseInsensitive));
-            var options = new JsonSerializerOptions(JsonSerializerDefaults.Web);
-            var response = await this.httpClient.PostAsJsonAsync<ApiRequest<LoginParams>>(string.Empty, login, options);
-            response = response.EnsureSuccessStatusCode();
-            if (response != null) {
-                var result = await response.Content.ReadFromJsonAsync<Envelope<LoginResponse>>();
-                if (result.code != 1000) 
-                    throw new Exception(result.msg);
-                return result?.resData;
-            }
-            else throw new Exception(response.ToString());
-        }
+        => await Post<LoginParams, LoginResponse>("account.login", 1000, new LoginParams(user, password, caseInsensitive));
 
-        public async Task<Unit> AccountLogout() 
-        {
-            var logout = new ApiRequest<Unit>("account.logout", new Unit());
-            var options = new JsonSerializerOptions(JsonSerializerDefaults.Web);
-            var response = await this.httpClient.PostAsJsonAsync<ApiRequest<Unit>>(string.Empty, logout, options);
-            response = response.EnsureSuccessStatusCode();
-            if (response != null) {
-                var result = await response.Content.ReadFromJsonAsync<Envelope<Unit>>();
-                if (result.code != 1500) 
-                    throw new Exception(result.msg);
-                return result?.resData;
-            }
-            else throw new Exception(response.ToString());
-        }
+        public async Task<Unit> AccountLogout()
+        => await Post<Unit, Unit>("account.logout", 1500, new Unit());
 
+        // Retrieve all nameserver info including the nameserver records 
 
+        public record class NameServerInfoParams(string domain) { };
+        public record class NameServerInfoResponse(
+            int roId,
+            string domain,
+            string type,
+            int count,
+            [property: JsonPropertyName("record")]
+            NameServerRecord[] Records
+        )
+        { };
+
+        public record class NameServerRecord(
+            int id,
+            string name,
+            string type,
+            string content,
+            int ttl,
+            int prio
+        )
+        { };
+
+        public async Task<NameServerInfoResponse> NameServerIno(string domain)
+        => await Post<NameServerInfoParams, NameServerInfoResponse>("nameserver.info", 1000, new NameServerInfoParams(domain));
+
+        // Creating a new nameserver entry 
+        public record class NameServerCreateRecordParams(int roId, string type, string name, string content, int ttl = 3600, int prio = 0) { };
+        public record class NameServerCreateRecordResponse(int id) { }
+
+        public async Task<int> NameServerCreateRecord(int roId, string type, string name, string content, int ttl = 3600, int prio = 0)
+        => (await Post<NameServerCreateRecordParams, NameServerCreateRecordResponse>("nameserver.createRecord", 1000,
+                  new NameServerCreateRecordParams(roId, type, name, content, ttl, prio))).id;
+
+        // Update an existing nameserver entry
+
+        public record class NameServerUpdateRecordParams(int id, string type, string name, string content) { };
+
+        public async Task<Unit> NameServerUpdateRecord(int id, string type, string name, string content)
+        => await Post<NameServerUpdateRecordParams, Unit>("nameserver.updateRecord", 1000,
+                new NameServerUpdateRecordParams(id, type, name, content));
     }
 }
