@@ -7,7 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F3C4F48E-DA1
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "stefc.inwx", "src\stefc.inwx.csproj", "{B5F46C5A-2921-49CE-B48B-9B09FF471175}"
 EndProject
-
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sample", "sample\sample.csproj", "{140321EA-35C7-4E74-8103-EE0F59AFDBE2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +22,10 @@ Global
 		{B5F46C5A-2921-49CE-B48B-9B09FF471175}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B5F46C5A-2921-49CE-B48B-9B09FF471175}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B5F46C5A-2921-49CE-B48B-9B09FF471175}.Release|Any CPU.Build.0 = Release|Any CPU
+		{140321EA-35C7-4E74-8103-EE0F59AFDBE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{140321EA-35C7-4E74-8103-EE0F59AFDBE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{140321EA-35C7-4E74-8103-EE0F59AFDBE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{140321EA-35C7-4E74-8103-EE0F59AFDBE2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{B5F46C5A-2921-49CE-B48B-9B09FF471175} = {F3C4F48E-DA17-4169-8F9B-0E894597BA7A}
