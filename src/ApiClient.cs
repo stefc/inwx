@@ -95,7 +95,7 @@ namespace stefc.inwx
         )
         { };
 
-        public async Task<NameServerInfoResponse> NameServerIno(string domain)
+        public async Task<NameServerInfoResponse> NameServerInfo(string domain)
         => await Post<NameServerInfoParams, NameServerInfoResponse>("nameserver.info", 1000, new NameServerInfoParams(domain));
 
         // Creating a new nameserver entry 
