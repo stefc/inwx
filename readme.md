@@ -15,6 +15,7 @@ But I only implement the following API methods they provide. That's at the momen
 - nameserver.info
 - nameserver.createRecord
 - nameserver.updateRecord
+- nameserver.deleteRecord
 
 
 For explain how it is used have a look on the `/sample` folder. I think it's selfdecriped for any C# developer. 
