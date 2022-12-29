@@ -29,26 +29,15 @@ namespace stefc.inwx
             this.apiUrl = apiUrl;
             this.language = lang == Language.DE ? "DE" : "EN";
             this.httpClient = BuildClient();
-            this.httpClient.BaseAddress = new Uri(this.apiUrl);
-            this.httpClient.DefaultRequestHeaders.Accept
-                .Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            
         }
-
-        public IWebProxy Proxy { get; private set; } = null;
 
         private HttpClient BuildClient()
         {
-            if (this.Proxy == null)
-            {
-                var client = new HttpClient();
-
-                return client;
-            }
-
-            var handler = new HttpClientHandler();
-            handler.Proxy = this.Proxy;
-
-            return new HttpClient(handler);
+            var client = new HttpClient();
+            client.BaseAddress = new Uri(this.apiUrl);
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            return client;
         }
 
 
@@ -118,11 +107,19 @@ namespace stefc.inwx
                   new NameServerCreateRecordParams(roId, type, name, content, ttl, prio))).id;
 
         // Update an existing nameserver entry
-
         public record class NameServerUpdateRecordParams(int id, string type, string name, string content) { };
 
         public async Task<Unit> NameServerUpdateRecord(int id, string type, string name, string content)
-        => await Post<NameServerUpdateRecordParams, Unit>("nameserver.updateRecord", 1000,
-                new NameServerUpdateRecordParams(id, type, name, content));
+        => await Post<NameServerUpdateRecordParams, Unit>
+            ("nameserver.updateRecord", 1000, new NameServerUpdateRecordParams(id, type, name, content));
+
+        // Delete an existing nameserver entry 
+        public record class NameServerDeleteRecordParams(int id) { };
+        
+        public async Task<Unit> NameServerDeleteRecord(int id)
+        => await Post<NameServerDeleteRecordParams, Unit>
+            ("nameserver.deleteRecord", 1000, new NameServerDeleteRecordParams(id));
+
+        
     }
 }

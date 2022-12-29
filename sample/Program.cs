@@ -1,7 +1,4 @@
-﻿using System.Collections.Immutable;
-using System.Globalization;
-
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 
 using stefc.inwx;
 
@@ -9,6 +6,8 @@ internal class Program
 {
     private static async Task Main(string[] args)
     {
+        var domainName = args.FirstOrDefault("example.com");
+
         var config = new ConfigurationBuilder()
 			.SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
 			.AddJsonFile("appsettings.json")
@@ -26,12 +25,13 @@ internal class Program
         System.Console.WriteLine($"Customer-No:{response.customerNo}");
 
         // List all DNS Records of my Domain 'example.com'
-        var domainInfo = await apiClient.NameServerIno("example.com");
+        var domainInfo = await apiClient.NameServerIno(domainName);
         foreach(var rec in domainInfo.Records) {
             System.Console.WriteLine($"{rec.id}\t{rec.name}\t{rec.type}\t{rec.content}\t{rec.ttl}\t{rec.prio}");
         }
 
         var recAbc = domainInfo.Records.SingleOrDefault( r => r.name.StartsWith("abc"));
+        int recordId = recAbc?.id ?? -1;
 
         if (recAbc != null) 
         {
@@ -41,11 +41,14 @@ internal class Program
         else
         {
             // Add a DNS Entry 
-            var recordId = await apiClient.NameServerCreateRecord(domainInfo.roId, "TXT", "abc", "xyz");
+            recordId = await apiClient.NameServerCreateRecord(domainInfo.roId, "TXT", "abc", "xyz", ttl:600);
             System.Console.WriteLine($"Added new record with Id:{recordId}");
         }
 
+        await Task.Delay(2000); // 2sec
 
+        await apiClient.NameServerDeleteRecord(recordId);
+        System.Console.WriteLine("Delete new TXT entry directly");
 
         // Logout from Service
         await apiClient.AccountLogout();
